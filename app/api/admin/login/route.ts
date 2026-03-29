@@ -1,9 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
-import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 
 const ADMIN_EMAILS = process.env.ADMIN_EMAILS?.split(',') || [];
-const ADMIN_PASSWORD_HASH = process.env.ADMIN_PASSWORD ? bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10) : '';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
 
 export async function POST(req: NextRequest) {
   try {
@@ -17,7 +16,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Unauthorized email' }, { status: 401 });
     }
 
-    const isValidPassword = bcrypt.compareSync(password, ADMIN_PASSWORD_HASH);
+    const isValidPassword = password === ADMIN_PASSWORD;
     if (!isValidPassword) {
       return NextResponse.json({ error: 'Invalid password' }, { status: 401 });
     }
