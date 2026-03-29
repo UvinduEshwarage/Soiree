@@ -86,7 +86,7 @@ export default function Home() {
       <p style={{ marginTop: '3rem', color: 'var(--muted)', fontSize: '0.8rem' }}>
         Already registered? <Link href="/ticket/lookup" style={{ color: 'var(--gold)' }}>Look up your ticket →</Link>
       </p>
-      <p>by Uvindu Nethmina</p>
+      <p style={{ marginTop: '3rem', color: 'var(--muted)', fontSize: '0.8rem' }}>by Uvindu Nethmina</p>
     </main>
   );
 }
