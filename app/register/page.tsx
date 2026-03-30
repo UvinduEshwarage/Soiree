@@ -99,7 +99,7 @@ export default function RegisterPage() {
       <div style={{ maxWidth: '640px', margin: '0 auto' }}>
         <Link href="/" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.9rem' }}>← Back</Link>
         <h1 className="font-display" style={{ fontSize: '2.5rem', margin: '1.5rem 0 0.5rem', lineHeight: 1.1 }}>
-          <span className="gold-gradient">Register</span> for the Party
+          <span className="gold-gradient">Soirée 2.0 </span> E-Ticket Registration!
         </h1>
         <p style={{ color: 'var(--muted)', marginBottom: '2rem' }}>Fill in your details and upload your payment slip to get your E-ticket.</p>
 
