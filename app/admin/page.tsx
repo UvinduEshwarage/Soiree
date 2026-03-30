@@ -252,10 +252,10 @@ export default function AdminPage() {
                     <td style={{ padding: '0.875rem 1rem', color: 'var(--muted)' }}>{ticket.batch}</td>
                     <td style={{ padding: '0.875rem 1rem' }}>
                       <span style={{ fontSize: '0.75rem', padding: '0.2rem 0.6rem', borderRadius: 50,
-                        background: ticket.ticketType === 'vip' ? 'rgba(201,168,76,0.15)' : 'rgba(124,58,237,0.15)',
-                        color: ticket.ticketType === 'vip' ? 'var(--gold)' : '#a78bfa',
-                        border: ticket.ticketType === 'vip' ? '1px solid rgba(201,168,76,0.3)' : '1px solid rgba(124,58,237,0.3)',
-                      }}>{ticket.ticketType.toUpperCase()}</span>
+                        background: 'rgba(124,58,237,0.15)',
+                        color: '#a78bfa',
+                        border: '1px solid rgba(124,58,237,0.3)',
+                      }}>STANDARD</span>
                     </td>
                     <td style={{ padding: '0.875rem 1rem', whiteSpace: 'nowrap' }}>LKR {ticket.price.toLocaleString()}</td>
                     <td style={{ padding: '0.875rem 1rem', color: 'var(--muted)', fontSize: '0.8rem' }}>{ticket.bankReference || '—'}</td>
@@ -298,7 +298,7 @@ export default function AdminPage() {
                 ['Ticket ID', selected.ticketId], ['Name', selected.name],
                 ['Email', selected.email], ['Phone', selected.phone],
                 ['Batch', selected.batch], ['Index No.', selected.indexNumber],
-                ['Type', selected.ticketType.toUpperCase()], ['Amount', `LKR ${selected.price.toLocaleString()}`],
+                ['Type', 'STANDARD'], ['Amount', `LKR ${selected.price.toLocaleString()}`],
                 ['Bank Ref', selected.bankReference || '—'], ['Registered', new Date(selected.createdAt).toLocaleString()],
               ].map(([l, v]) => (
                 <div key={l}>
@@ -312,7 +312,22 @@ export default function AdminPage() {
             {selected.paymentSlip && (
               <div style={{ marginBottom: '1.5rem' }}>
                 <p style={{ color: 'var(--muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Payment Slip</p>
-                <Image src={selected.paymentSlip} alt="Payment Slip" width={400} height={300} style={{ width: '100%', height: 'auto', borderRadius: 10, border: '1px solid rgba(201,168,76,0.2)' }} unoptimized />
+                {selected.paymentSlip.startsWith('data:application/pdf') ? (
+                  <div style={{ padding: '1rem', background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 10 }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                      <div style={{ fontSize: '1.5rem' }}>📄</div>
+                      <div>
+                        <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.25rem' }}>PDF Document</p>
+                        <a href={selected.paymentSlip} target="_blank" rel="noopener noreferrer"
+                          style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.85rem' }}>
+                          📎 View PDF →
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <Image src={selected.paymentSlip} alt="Payment Slip" width={400} height={300} style={{ width: '100%', height: 'auto', borderRadius: 10, border: '1px solid rgba(201,168,76,0.2)' }} unoptimized />
+                )}
               </div>
             )}
 

@@ -5,7 +5,7 @@ import { generateQRCode } from '@/lib/qr';
 import { v4 as uuidv4 } from 'uuid';
 import { verifyAdmin } from '@/lib/auth';
 
-const PRICES = { standard: 1500, vip: 2500 };
+const PRICES = { standard: 5000 };
 
 export async function POST(req: NextRequest) {
   try {
@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
     }
 
     const ticketId = `BATCH-${uuidv4().slice(0, 8).toUpperCase()}`;
-    const type = ticketType === 'vip' ? 'vip' : 'standard';
+    const type = 'standard';
     const price = PRICES[type];
 
     const qrCode = await generateQRCode(ticketId);

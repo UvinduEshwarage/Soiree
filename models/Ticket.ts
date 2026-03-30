@@ -7,7 +7,7 @@ export interface ITicket extends Document {
   phone: string;
   batch: string;
   indexNumber: string;
-  ticketType: 'standard' | 'vip';
+  ticketType: 'standard';
   price: number;
   paymentStatus: 'pending' | 'verified' | 'rejected';
   paymentSlip: string; // base64 or file path
@@ -27,7 +27,7 @@ const TicketSchema = new Schema<ITicket>(
     phone: { type: String, required: true },
     batch: { type: String, required: true },
     indexNumber: { type: String, required: true },
-    ticketType: { type: String, enum: ['standard', 'vip'], default: 'standard' },
+    ticketType: { type: String, enum: ['standard'], default: 'standard' },
     price: { type: Number, required: true },
     paymentStatus: {
       type: String,

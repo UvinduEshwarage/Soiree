@@ -135,11 +135,11 @@ export default function ScannerPage() {
                 <p style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: '0.25rem' }}>{result.ticket.name}</p>
                 <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>{result.ticket.batch}</p>
                 <span style={{ display: 'inline-block', marginTop: '0.5rem', padding: '0.25rem 0.875rem', borderRadius: 50, fontSize: '0.8rem', fontWeight: 600,
-                  background: result.ticket.ticketType === 'vip' ? 'rgba(201,168,76,0.2)' : 'rgba(124,58,237,0.2)',
-                  color: result.ticket.ticketType === 'vip' ? 'var(--gold)' : '#a78bfa',
-                  border: result.ticket.ticketType === 'vip' ? '1px solid var(--gold)' : '1px solid rgba(124,58,237,0.4)',
+                  background: 'rgba(124,58,237,0.2)',
+                  color: '#a78bfa',
+                  border: '1px solid rgba(124,58,237,0.4)',
                 }}>
-                  {result.ticket.ticketType === 'vip' ? '👑 VIP' : '🎟️ Standard'}
+                  🎟️ Standard
                 </span>
               </div>
             )}

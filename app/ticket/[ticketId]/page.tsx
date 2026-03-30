@@ -53,12 +53,12 @@ export default function TicketPage() {
           {/* Top section */}
           <div className="glass" style={{ borderRadius: '16px 16px 0 0', borderBottom: 'none', padding: '2rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--gold)', letterSpacing: '0.3em', fontSize: '0.7rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>✦ E-Ticket ✦</p>
-            <h1 className="font-display shimmer" style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>Batch Party 2025</h1>
+            <h1 className="font-display shimmer" style={{ fontSize: '2rem', marginBottom: '0.25rem' }}>Soirée 2.0</h1>
             <span style={{ display: 'inline-block', padding: '0.25rem 1rem', borderRadius: 50, fontSize: '0.75rem', fontWeight: 600,
-              background: ticket.ticketType === 'vip' ? 'rgba(201,168,76,0.2)' : 'rgba(124,58,237,0.2)',
-              color: ticket.ticketType === 'vip' ? 'var(--gold)' : '#a78bfa',
-              border: ticket.ticketType === 'vip' ? '1px solid var(--gold)' : '1px solid rgba(124,58,237,0.4)',
-            }}>{ticket.ticketType === 'vip' ? '👑 VIP' : '🎟️ Standard'}</span>
+              background: 'rgba(124,58,237,0.2)',
+              color: '#a78bfa',
+              border: '1px solid rgba(124,58,237,0.4)',
+            }}>🎟️ Standard</span>
 
             {/* QR Code */}
             <div style={{ margin: '1.5rem 0' }}>

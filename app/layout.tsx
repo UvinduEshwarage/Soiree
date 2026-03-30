@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body style={{ position: 'relative', zIndex: 1 }}>{children}</body>
+      <body style={{ position: 'relative', zIndex: 1 }} suppressHydrationWarning={true}>{children}</body>
     </html>
   );
 }

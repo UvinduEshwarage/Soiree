@@ -11,17 +11,47 @@ export default function RegisterPage() {
   const [ticketId, setTicketId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
 
-  const prices = { standard: 1500, vip: 2500 };
+  const prices = { standard: 5000 };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+
+    // Check file type
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'application/pdf'];
+    if (!allowedTypes.includes(file.type)) {
+      setErrorMsg('Please upload a JPG image or PDF file only');
+      setStatus('error');
+      return;
+    }
+
+    // Check file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      setErrorMsg('File size must be less than 5MB');
+      setStatus('error');
+      return;
+    }
+
     const reader = new FileReader();
     reader.onload = (ev) => setForm(f => ({ ...f, paymentSlip: ev.target?.result as string }));
     reader.readAsDataURL(file);
   };
 
   const handleSubmit = async () => {
+    // Phone validation
+    if (!form.phone || !/^0\d{9}$/.test(form.phone)) {
+      setErrorMsg('Phone number must be exactly 10 digits and start with 0 (e.g., 0712345678)');
+      setStatus('error');
+      return;
+    }
+
+    // Check if all required fields are filled
+    if (!form.name || !form.email || !form.phone || !form.batch || !form.indexNumber || !form.paymentSlip) {
+      setErrorMsg('All fields are required, including payment slip upload');
+      setStatus('error');
+      return;
+    }
+
     setStatus('loading');
     try {
       const res = await fetch('/api/tickets', {
@@ -74,23 +104,11 @@ export default function RegisterPage() {
         <p style={{ color: 'var(--muted)', marginBottom: '2rem' }}>Fill in your details and upload your payment slip to get your E-ticket.</p>
 
         <div className="glass" style={{ padding: '2rem' }}>
-          {/* Ticket Type */}
-          <div style={{ marginBottom: '1.5rem' }}>
-            <label style={{ display: 'block', marginBottom: '0.5rem' }}>Ticket Type</label>
-            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-              {(['standard', 'vip'] as const).map(t => (
-                <button key={t} onClick={() => setForm(f => ({ ...f, ticketType: t }))}
-                  style={{ padding: '1rem', borderRadius: 12, cursor: 'pointer', transition: 'all 0.2s', textAlign: 'center', fontFamily: 'inherit',
-                    background: form.ticketType === t ? 'rgba(201,168,76,0.15)' : 'rgba(13,13,26,0.8)',
-                    border: form.ticketType === t ? '1px solid var(--gold)' : '1px solid rgba(201,168,76,0.2)',
-                    color: form.ticketType === t ? 'var(--gold)' : 'var(--muted)',
-                  }}>
-                  <div style={{ fontSize: '1.5rem' }}>{t === 'vip' ? '👑' : '🎟️'}</div>
-                  <div style={{ fontWeight: 600, textTransform: 'capitalize' }}>{t}</div>
-                  <div style={{ fontSize: '0.85rem' }}>LKR {prices[t].toLocaleString()}</div>
-                </button>
-              ))}
-            </div>
+          {/* Ticket Info */}
+          <div style={{ marginBottom: '1.5rem', textAlign: 'center' }}>
+            <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🎟️</div>
+            <div style={{ fontWeight: 600, fontSize: '1.1rem' }}>Standard Ticket</div>
+            <div style={{ color: 'var(--gold)', fontSize: '1.2rem', fontWeight: 700 }}>LKR {prices.standard.toLocaleString()}</div>
           </div>
 
           {/* Fields */}
@@ -98,9 +116,9 @@ export default function RegisterPage() {
             {[
               { key: 'name', label: 'Full Name', placeholder: 'Your full name', type: 'text' },
               { key: 'email', label: 'Email Address', placeholder: 'you@example.com', type: 'email' },
-              { key: 'phone', label: 'Phone Number', placeholder: '07X XXX XXXX', type: 'tel' },
-              { key: 'batch', label: 'Batch / Year', placeholder: 'e.g. 2021/2022', type: 'text' },
-              { key: 'indexNumber', label: 'Index Number', placeholder: 'e.g. EG/2021/001', type: 'text' },
+              { key: 'phone', label: 'Phone Number', placeholder: '0712345678 (10 digits, starts with 0)', type: 'tel' },
+              { key: 'batch', label: 'Out year(2019/2022) ', placeholder: 'e.g. 2021/2022', type: 'text' },
+              { key: 'indexNumber', label: 'NIC', placeholder: '200315100***', type: 'text' },
               { key: 'bankReference', label: 'Bank Reference / Transaction ID', placeholder: 'e.g. TXN123456789', type: 'text' },
             ].map(({ key, label, placeholder, type }) => (
               <div key={key}>
@@ -113,13 +131,13 @@ export default function RegisterPage() {
 
             {/* Payment Slip Upload */}
             <div>
-              <label style={{ display: 'block', marginBottom: '0.4rem' }}>Payment Slip (Photo/Screenshot)</label>
+              <label style={{ display: 'block', marginBottom: '0.4rem' }}>Payment Slip (JPG or PDF)</label>
               <div style={{
                 border: '1px dashed rgba(201,168,76,0.4)', borderRadius: 12, padding: '1.5rem',
                 textAlign: 'center', cursor: 'pointer', position: 'relative',
                 background: form.paymentSlip ? 'rgba(34,197,94,0.05)' : 'rgba(13,13,26,0.5)',
               }}>
-                <input type="file" accept="image/*" onChange={handleFile}
+                <input type="file" accept=".jpg,.jpeg,.pdf" onChange={handleFile}
                   style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%' }} />
                 {form.paymentSlip ? (
                   <div>
@@ -129,7 +147,7 @@ export default function RegisterPage() {
                 ) : (
                   <div>
                     <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📎</div>
-                    <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Click to upload payment slip</p>
+                    <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Click to upload payment slip (JPG or PDF)</p>
                   </div>
                 )}
               </div>
@@ -141,7 +159,7 @@ export default function RegisterPage() {
               <p style={{ color: 'var(--muted)', fontSize: '0.85rem', lineHeight: 1.8 }}>
                 Bank: Commercial Bank · A/C No: 1234567890<br />
                 Account Name: Batch Party Fund<br />
-                Amount: LKR {prices[form.ticketType as 'standard' | 'vip'].toLocaleString()}
+                Amount: LKR {prices.standard.toLocaleString()}
               </p>
             </div>
 

@@ -24,14 +24,9 @@ export default function Home() {
           <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🎟️</div>
           <h3 className="font-display" style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--gold-light)' }}>Standard Ticket</h3>
           <p style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>LKR 5000</p>
-          <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>General admission · Dinner included</p>
+          <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Enjoy full access to the party with music, vibes, and general entry.  One entry per ticket.</p>
         </div>
-        <div className="glass fade-up" style={{ padding: '2rem', animationDelay: '0.2s', border: '1px solid rgba(201,168,76,0.5)' }}>
-          <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>👑</div>
-          <h3 className="font-display" style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--gold-light)' }}>VIP Ticket</h3>
-          <p style={{ fontSize: '2rem', fontWeight: 700, marginBottom: '0.5rem' }}>LKR 2,500</p>
-          <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Priority entry · Premium table · Dinner</p>
-        </div>
+        
         <div className="glass fade-up" style={{ padding: '2rem', animationDelay: '0.3s' }}>
           <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🏦</div>
           <h3 className="font-display" style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--gold-light)' }}>Bank Payment</h3>
@@ -76,17 +71,13 @@ export default function Home() {
             Admin Panel
           </button>
         </Link>
-        <Link href="/scanner">
-          <button className="btn-outline" style={{ padding: '0.875rem 2rem', borderRadius: '50px', fontSize: '1rem' }}>
-            🔍 Scanner
-          </button>
-        </Link>
+       
       </div>
 
       <p style={{ marginTop: '3rem', color: 'var(--muted)', fontSize: '0.8rem' }}>
         Already registered? <Link href="/ticket/lookup" style={{ color: 'var(--gold)' }}>Look up your ticket →</Link>
       </p>
-      <p style={{ marginTop: '3rem', color: 'var(--muted)', fontSize: '0.8rem' }}>by Uvindu Nethmina</p>
+      <p style={{ marginTop: '3rem', color: 'var(--muted)', fontSize: '0.8rem' }}>© 2026 Uvindu Nethmina. All rights reserved.</p>
     </main>
   );
 }
