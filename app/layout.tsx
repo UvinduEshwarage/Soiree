@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'Batch Party 2025 — E-Ticket System',
-  description: 'Official ticket portal for Batch Party 2025',
+  title: 'Soirée 2.0 — E-Ticket portal',
+  description: 'Official ticket portal for Batch Party 2026',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
