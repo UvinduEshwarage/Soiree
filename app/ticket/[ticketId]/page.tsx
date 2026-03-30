@@ -3,6 +3,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import jsPDF from 'jspdf';
+import html2canvas from 'html2canvas';
 
 interface Ticket {
   ticketId: string; name: string; email: string; phone: string;
@@ -43,13 +45,70 @@ export default function TicketPage() {
   const statusColors: Record<string, string> = { pending: '#fbbf24', verified: '#4ade80', rejected: '#f87171' };
   const statusLabel: Record<string, string> = { pending: '⏳ Pending Verification', verified: '✅ Payment Verified', rejected: '❌ Payment Rejected' };
 
+  const downloadPDF = async () => {
+    if (!ticket) return;
+    const printElement = document.getElementById('ticket-print-section');
+    if (!printElement) return;
+
+    // Raise resolution for better quality
+    const canvas = await html2canvas(printElement, {
+      backgroundColor: '#ffffff',
+      scale: 2,
+      useCORS: true,
+      logging: false,
+    });
+
+    const imgData = canvas.toDataURL('image/png');
+    const pdf = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'portrait' });
+
+    const pageWidth = pdf.internal.pageSize.getWidth();
+    const pageHeight = pdf.internal.pageSize.getHeight();
+    const imgWidth = pageWidth - 40;
+    const aspectRatio = canvas.width / canvas.height;
+    const imgHeight = imgWidth / aspectRatio;
+
+    const y = 20;
+    pdf.addImage(imgData, 'PNG', 20, y, imgWidth, imgHeight);
+
+    // If content overflows one page, add more pages
+    if (imgHeight + 40 > pageHeight) {
+      const totalPages = Math.ceil((imgHeight + 40) / pageHeight);
+      for (let i = 1; i < totalPages; i += 1) {
+        pdf.addPage();
+        pdf.addImage(imgData, 'PNG', 20, -pageHeight * i + 20, imgWidth, imgHeight);
+      }
+    }
+
+    pdf.save(`${ticket.ticketId}-eticket.pdf`);
+  };
+
   return (
     <main style={{ minHeight: '100vh', padding: '2rem', position: 'relative', zIndex: 1 }}>
+      <style>{`
+        @media print {
+          body { background: #ffffff !important; color: #000 !important; }
+          .no-print { display: none !important; }
+          #ticket-print-section { width: 100% !important; box-shadow: none !important; }
+          #ticket-print-section * { color: #000 !important; }
+        }
+      `}</style>
+
       <div style={{ maxWidth: '500px', margin: '0 auto' }}>
-        <Link href="/" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.9rem' }}>← Home</Link>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+          <Link href="/" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.9rem' }}>← Home</Link>
+          {ticket.paymentStatus === 'verified' && !ticket.isUsed ? (
+            <button onClick={downloadPDF} className="btn-gold" style={{ padding: '0.5rem 1rem', fontSize: '0.85rem', borderRadius: 45 }}>
+              ⬇️ Download Ticket PDF
+            </button>
+          ) : (
+            <span style={{ fontSize: '0.85rem', color: 'var(--muted)' }}>
+              Ticket download available only after admin approval.  
+            </span>
+          )}
+        </div>
 
         {/* Ticket Card */}
-        <div style={{ marginTop: '1.5rem', position: 'relative' }}>
+        <div id="ticket-print-section" style={{ marginTop: '1.5rem', position: 'relative' }}>
           {/* Top section */}
           <div className="glass" style={{ borderRadius: '16px 16px 0 0', borderBottom: 'none', padding: '2rem', textAlign: 'center' }}>
             <p style={{ color: 'var(--gold)', letterSpacing: '0.3em', fontSize: '0.7rem', textTransform: 'uppercase', marginBottom: '0.5rem' }}>✦ E-Ticket ✦</p>

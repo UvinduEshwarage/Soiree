@@ -117,7 +117,7 @@ export default function RegisterPage() {
               { key: 'name', label: 'Full Name', placeholder: 'Your full name', type: 'text' },
               { key: 'email', label: 'Email Address', placeholder: 'you@example.com', type: 'email' },
               { key: 'phone', label: 'Phone Number', placeholder: '0712345678 (10 digits, starts with 0)', type: 'tel' },
-              { key: 'batch', label: 'Out year(2019/2022) ', placeholder: 'e.g. 2021/2022', type: 'text' },
+              { key: 'batch', label: 'Out year ', placeholder: 'e.g. 2019/2022', type: 'text' },
               { key: 'indexNumber', label: 'NIC', placeholder: '200315100***', type: 'text' },
               { key: 'bankReference', label: 'Bank Reference / Transaction ID', placeholder: 'e.g. TXN123456789', type: 'text' },
             ].map(({ key, label, placeholder, type }) => (
