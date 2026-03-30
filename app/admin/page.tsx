@@ -135,6 +135,7 @@ export default function AdminPage() {
     return (
       <main style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem', position: 'relative', zIndex: 1 }}>
         <div className="glass" style={{ padding: '2rem', width: '100%', maxWidth: '400px' }}>
+          <Link href="/" style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.85rem' }}>← Back</Link>
           <h2 className="font-display" style={{ textAlign: 'center', marginBottom: '1.5rem', color: 'var(--gold-light)' }}>Admin Login</h2>
           <form onSubmit={handleLogin}>
             <div style={{ marginBottom: '1rem' }}>
