@@ -10,8 +10,44 @@ const PRICES = { standard: 5000 };
 export async function POST(req: NextRequest) {
   try {
     await connectDB();
-    const body = await req.json();
-    const { name, email, phone, batch, indexNumber, ticketType, bankReference, paymentSlip } = body;
+
+    const contentType = req.headers.get('content-type') || '';
+    let name = '';
+    let email = '';
+    let phone = '';
+    let batch = '';
+    let indexNumber = '';
+    let ticketType = 'standard';
+    let bankReference = '';
+    let paymentSlip = '';
+
+    if (contentType.includes('multipart/form-data')) {
+      const formData = await req.formData();
+      name = (formData.get('name') as string) || '';
+      email = (formData.get('email') as string) || '';
+      phone = (formData.get('phone') as string) || '';
+      batch = (formData.get('batch') as string) || '';
+      indexNumber = (formData.get('indexNumber') as string) || '';
+      ticketType = (formData.get('ticketType') as string) || 'standard';
+      bankReference = (formData.get('bankReference') as string) || '';
+
+      const slipFile = formData.get('paymentSlip');
+      if (slipFile && slipFile instanceof File) {
+        const buffer = await slipFile.arrayBuffer();
+        const base64 = Buffer.from(buffer).toString('base64');
+        paymentSlip = `data:${slipFile.type};base64,${base64}`;
+      }
+    } else {
+      const body = await req.json();
+      name = body.name || '';
+      email = body.email || '';
+      phone = body.phone || '';
+      batch = body.batch || '';
+      indexNumber = body.indexNumber || '';
+      ticketType = body.ticketType || 'standard';
+      bankReference = body.bankReference || '';
+      paymentSlip = body.paymentSlip || '';
+    }
 
     if (!name || !email || !phone || !batch || !indexNumber) {
       return NextResponse.json({ error: 'All fields are required' }, { status: 400 });

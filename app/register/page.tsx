@@ -5,8 +5,10 @@ import Link from 'next/link';
 export default function RegisterPage() {
   const [form, setForm] = useState({
     name: '', email: '', phone: '', batch: '', indexNumber: '',
-    ticketType: 'standard', bankReference: '', paymentSlip: '',
+    ticketType: 'standard', bankReference: '',
   });
+  const [paymentSlipFile, setPaymentSlipFile] = useState<File | null>(null);
+  const [paymentSlipPreview, setPaymentSlipPreview] = useState('');
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [ticketId, setTicketId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
@@ -17,10 +19,10 @@ export default function RegisterPage() {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Check file type
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'application/pdf'];
+    // Accept screenshots and common image formats plus PDF
+    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/heic', 'application/pdf'];
     if (!allowedTypes.includes(file.type)) {
-      setErrorMsg('Please upload a JPG image or PDF file only');
+      setErrorMsg('Please upload JPG/PNG/HEIC image or PDF file only');
       setStatus('error');
       return;
     }
@@ -32,9 +34,10 @@ export default function RegisterPage() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = (ev) => setForm(f => ({ ...f, paymentSlip: ev.target?.result as string }));
-    reader.readAsDataURL(file);
+    setPaymentSlipFile(file);
+    setPaymentSlipPreview(URL.createObjectURL(file));
+    setStatus('idle');
+    setErrorMsg('');
   };
 
   const handleSubmit = async () => {
@@ -46,7 +49,7 @@ export default function RegisterPage() {
     }
 
     // Check if all required fields are filled
-    if (!form.name || !form.email || !form.phone || !form.batch || !form.indexNumber || !form.paymentSlip) {
+    if (!form.name || !form.email || !form.phone || !form.batch || !form.indexNumber || !paymentSlipFile) {
       setErrorMsg('All fields are required, including payment slip upload');
       setStatus('error');
       return;
@@ -54,16 +57,27 @@ export default function RegisterPage() {
 
     setStatus('loading');
     try {
+      const formData = new FormData();
+      formData.append('name', form.name);
+      formData.append('email', form.email);
+      formData.append('phone', form.phone);
+      formData.append('batch', form.batch);
+      formData.append('indexNumber', form.indexNumber);
+      formData.append('ticketType', form.ticketType);
+      formData.append('bankReference', form.bankReference);
+      formData.append('paymentSlip', paymentSlipFile);
+
       const res = await fetch('/api/tickets', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: formData,
       });
+
       const data = await res.json();
       if (!res.ok) { setErrorMsg(data.error); setStatus('error'); return; }
       setTicketId(data.ticketId);
       setStatus('success');
-    } catch {
+    } catch (err) {
+      console.error('submit error', err);
       setErrorMsg('Network error. Please try again.');
       setStatus('error');
     }
@@ -131,23 +145,24 @@ export default function RegisterPage() {
 
             {/* Payment Slip Upload */}
             <div>
-              <label style={{ display: 'block', marginBottom: '0.4rem' }}>Payment Slip (JPG or PDF)</label>
+              <label style={{ display: 'block', marginBottom: '0.4rem' }}>Payment Slip (JPG/PNG/HEIC/PDF)</label>
               <div style={{
                 border: '1px dashed rgba(201,168,76,0.4)', borderRadius: 12, padding: '1.5rem',
                 textAlign: 'center', cursor: 'pointer', position: 'relative',
-                background: form.paymentSlip ? 'rgba(34,197,94,0.05)' : 'rgba(13,13,26,0.5)',
+                background: paymentSlipPreview ? 'rgba(34,197,94,0.05)' : 'rgba(13,13,26,0.5)',
               }}>
-                <input type="file" accept=".jpg,.jpeg,.pdf" onChange={handleFile}
+                <input type="file" accept=".jpg,.jpeg,.png,.pdf" onChange={handleFile}
                   style={{ position: 'absolute', inset: 0, opacity: 0, cursor: 'pointer', width: '100%' }} />
-                {form.paymentSlip ? (
+                {paymentSlipPreview ? (
                   <div>
                     <div style={{ color: '#4ade80', fontSize: '1.5rem' }}>✓</div>
                     <p style={{ color: '#4ade80', fontSize: '0.9rem' }}>Payment slip uploaded</p>
+                    <p style={{ color: 'var(--muted)', fontSize: '0.75rem', marginTop: '0.25rem' }}>{paymentSlipFile?.name}</p>
                   </div>
                 ) : (
                   <div>
                     <div style={{ fontSize: '1.5rem', marginBottom: '0.25rem' }}>📎</div>
-                    <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Click to upload payment slip (JPG or PDF)</p>
+                    <p style={{ color: 'var(--muted)', fontSize: '0.9rem' }}>Click to upload payment slip (JPG/PNG/PDF)</p>
                   </div>
                 )}
               </div>
