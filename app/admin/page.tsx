@@ -94,6 +94,39 @@ export default function AdminPage() {
     setTickets([]);
   };
 
+  const dataUrlToBlob = (dataUrl: string): Blob | null => {
+    try {
+      const [header, base64] = dataUrl.split(',');
+      const contentType = header.split(':')[1].split(';')[0];
+      const binary = atob(base64);
+      const len = binary.length;
+      const bytes = new Uint8Array(len);
+      for (let i = 0; i < len; i += 1) {
+        bytes[i] = binary.charCodeAt(i);
+      }
+      return new Blob([bytes], { type: contentType });
+    } catch {
+      return null;
+    }
+  };
+
+  const openPdf = (dataUrl: string) => {
+    if (typeof window === 'undefined') return;
+    let url = dataUrl;
+    if (dataUrl.startsWith('data:application/pdf')) {
+      const blob = dataUrlToBlob(dataUrl);
+      if (!blob) {
+        window.open(dataUrl, '_blank');
+        return;
+      }
+      url = URL.createObjectURL(blob);
+      window.open(url, '_blank');
+      setTimeout(() => URL.revokeObjectURL(url), 15000);
+    } else {
+      window.open(url, '_blank');
+    }
+  };
+
   const updateStatus = async (ticketId: string, paymentStatus: string) => {
     setUpdating(true);
     try {
@@ -315,14 +348,22 @@ export default function AdminPage() {
                 <p style={{ color: 'var(--muted)', fontSize: '0.75rem', textTransform: 'uppercase', letterSpacing: '0.1em', marginBottom: '0.5rem' }}>Payment Slip</p>
                 {selected.paymentSlip.startsWith('data:application/pdf') ? (
                   <div style={{ padding: '1rem', background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 10 }}>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
                       <div style={{ fontSize: '1.5rem' }}>📄</div>
                       <div>
                         <p style={{ fontSize: '0.9rem', fontWeight: 600, marginBottom: '0.25rem' }}>PDF Document</p>
-                        <a href={selected.paymentSlip} target="_blank" rel="noopener noreferrer"
-                          style={{ color: 'var(--gold)', textDecoration: 'none', fontSize: '0.85rem' }}>
-                          📎 View PDF →
-                        </a>
+                        <div style={{ display: 'flex', gap: '0.75rem', flexWrap: 'wrap' }}>
+                          <button onClick={() => openPdf(selected.paymentSlip)}
+                            style={{ background: 'var(--gold)', color: '#000', border: 'none', borderRadius: 8, padding: '0.5rem 0.85rem', cursor: 'pointer', fontSize: '0.8rem' }}>
+                            📎 Open in new tab
+                          </button>
+                          <a
+                            href={selected.paymentSlip}
+                            download={`payment-slip-${selected.ticketId}.pdf`}
+                            style={{ background: 'rgba(255,255,255,0.1)', color: 'var(--gold)', textDecoration: 'none', borderRadius: 8, padding: '0.5rem 0.85rem', fontSize: '0.8rem' }}>
+                            ⬇️ Download
+                          </a>
+                        </div>
                       </div>
                     </div>
                   </div>
