@@ -1,5 +1,5 @@
 'use client';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 export default function RegisterPage() {
@@ -12,6 +12,18 @@ export default function RegisterPage() {
   const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
   const [ticketId, setTicketId] = useState('');
   const [errorMsg, setErrorMsg] = useState('');
+
+  // Store ticket ID in localStorage when registration is successful
+  useEffect(() => {
+    if (status === 'success' && ticketId) {
+      try {
+        localStorage.setItem('soiree_ticket_id', ticketId);
+        localStorage.setItem('soiree_user_email', form.email);
+      } catch (err) {
+        console.warn('Failed to store ticket ID in localStorage:', err);
+      }
+    }
+  }, [status, ticketId, form.email]);
 
   const prices = { standard: 5000 };
 
@@ -93,8 +105,11 @@ export default function RegisterPage() {
           <p style={{ fontFamily: 'monospace', fontSize: '1.3rem', color: 'var(--gold)', letterSpacing: '0.1em' }}>{ticketId}</p>
         </div>
         <p style={{ color: 'var(--muted)', fontSize: '0.9rem', marginBottom: '2rem', lineHeight: 1.7 }}>
-          Your ticket is <strong style={{ color: '#fbbf24' }}>pending payment verification</strong>. 
-          Once the admin verifies your bank transfer, your QR ticket will be activated. Save your Ticket ID!
+          Your ticket is <strong style={{ color: '#fbbf24' }}>pending payment verification</strong>.
+          Once the admin verifies your bank transfer, your QR ticket will be activated.
+          <br /><br />
+          <strong>💡 Tip:</strong> Your Ticket ID has been saved locally and sent to your email.
+          You can also find your ticket anytime by searching with your email address.
         </p>
         <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', flexWrap: 'wrap' }}>
           <Link href={`/ticket/${ticketId}`}>

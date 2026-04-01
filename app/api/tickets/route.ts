@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import { Ticket } from '@/models/Ticket';
 import { generateQRCode } from '@/lib/qr';
+import { sendTicketConfirmationEmail } from '@/lib/email';
 import { v4 as uuidv4 } from 'uuid';
 import { verifyAdmin } from '@/lib/auth';
 
@@ -77,6 +78,9 @@ export async function POST(req: NextRequest) {
       paymentSlip: paymentSlip || '',
       qrCode,
     });
+
+    // Send confirmation email (don't await to avoid blocking response)
+    sendTicketConfirmationEmail(email, ticketId, name);
 
     return NextResponse.json({ success: true, ticketId: ticket.ticketId }, { status: 201 });
   } catch (err) {
