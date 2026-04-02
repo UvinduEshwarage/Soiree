@@ -31,9 +31,10 @@ export default function Home() {
           <div style={{ fontSize: '2rem', marginBottom: '0.75rem' }}>🏦</div>
           <h3 className="font-display" style={{ fontSize: '1.25rem', marginBottom: '0.5rem', color: 'var(--gold-light)' }}>Bank Payment</h3>
           <p style={{ color: 'var(--muted)', fontSize: '0.9rem', lineHeight: 1.7 }}>
-            Bank: <strong style={{ color: 'var(--text)' }}>Commercial Bank</strong><br />
-            A/C: <strong style={{ color: 'var(--text)' }}>1234567890</strong><br />
-            Name: <strong style={{ color: 'var(--text)' }}>Batch Party Fund</strong>
+            Bank: <strong style={{ color: 'var(--text)' }}>NATIONAL SAVINGS BANK </strong><br />
+            Branch: <strong style={{ color: 'var(--text)' }}>Homagama Branch </strong><br />
+            A/C: <strong style={{ color: 'var(--text)' }}>100270787086</strong><br />
+            Name: <strong style={{ color: 'var(--text)' }}>ODL MUTHUMALA</strong>
           </p>
         </div>
       </div>

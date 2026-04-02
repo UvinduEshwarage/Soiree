@@ -186,11 +186,13 @@ export default function RegisterPage() {
             {/* Bank Info reminder */}
             <div style={{ background: 'rgba(201,168,76,0.05)', border: '1px solid rgba(201,168,76,0.2)', borderRadius: 12, padding: '1rem' }}>
               <p style={{ color: 'var(--gold)', fontSize: '0.8rem', fontWeight: 600, marginBottom: '0.5rem' }}>💳 Payment Details</p>
-              <p style={{ color: 'var(--muted)', fontSize: '0.85rem', lineHeight: 1.8 }}>
-                Bank: Commercial Bank · A/C No: 1234567890<br />
-                Account Name: Batch Party Fund<br />
-                Amount: LKR {prices.standard.toLocaleString()}
-              </p>
+              <div style={{ color: 'var(--muted)', fontSize: '0.85rem', lineHeight: 1.8 }}>
+                <div>Bank: NATIONAL SAVINGS BANK</div>
+                <div>Branch: Homagama Branch</div>
+                <div>A/C No: 100270787086</div>
+                <div>Account Name: ODL MUTHUMALA</div>
+                <div>Amount: LKR {prices.standard.toLocaleString()}</div>
+              </div>
             </div>
 
             {status === 'error' && (
